@@ -5,14 +5,11 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import pages.AutomationPracticeForm;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import java.util.HashMap;
-import java.util.Map;
-
+import static com.codeborne.selenide.Selenide.*;
 
 public class HW2PracticeFormTests {
 
-    String firstName = "Test",
+    String FirstName = "Test",
             lastName = "First",
             email = "test@test.ru",
             mobileNumber = "1234567890",
@@ -27,21 +24,6 @@ public class HW2PracticeFormTests {
             state = "Haryana",
             city = "Panipat";
 
-    public Map<String,String> mapTestData(){
-        Map<String, String> testData = new HashMap<>();
-        testData.put("Student Name", firstName + " " + lastName);
-        testData.put("Student Email", email);
-        testData.put("Gender", gender);
-        testData.put("Mobile", mobileNumber);
-        testData.put("Date of Birth", day + " " + month + "," + year);
-        testData.put("Subjects", subject);
-        testData.put("Hobbies", hobby);
-        testData.put("Picture", pathName);
-        testData.put("Address", currentAddress);
-        testData.put("State and City", state + " " + city);
-        return testData;
-    }
-
     @BeforeAll
     static void setup() {
         Configuration.startMaximized = true;
@@ -50,10 +32,10 @@ public class HW2PracticeFormTests {
     @Test
     void formTest(){
         AutomationPracticeForm practiceForm = new AutomationPracticeForm();
+        open("https://demoqa.com/automation-practice-form");
         practiceForm
-                .openPage("https://demoqa.com/automation-practice-form")
                 .checkHeader("Practice Form")
-                .setFirstNameElem(firstName)
+                .setFirstName(FirstName)
                 .setLastName(lastName)
                 .setUserEmail(email)
                 .setGender(gender)
@@ -66,8 +48,8 @@ public class HW2PracticeFormTests {
                 .setStateAndCity(city, state)
                 .clickSubmitButton();
         //comparing data
-        Map <String, String> acTestData = practiceForm.getSubmittingFormData();
-        Map <String, String> exTestData = mapTestData();
-        assertEquals(exTestData, acTestData);
+        practiceForm
+                .verifyData(FirstName, lastName, email, gender, mobileNumber, day, month, year, subject, hobby,pathName,
+                        currentAddress, state, city);
         }
 }

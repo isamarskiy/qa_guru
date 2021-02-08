@@ -1,132 +1,94 @@
 package pages;
 
-import com.codeborne.selenide.SelenideElement;
+import static com.codeborne.selenide.Selectors.byText;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
-import static com.codeborne.selenide.Condition.*;
+import static com.codeborne.selenide.Condition.text;
 import static com.codeborne.selenide.Selenide.*;
 
 public class AutomationPracticeForm {
 
-    final SelenideElement
-            headerElem = $(".main-header"),
-            firstNameElem = $("#firstName"),
-            lastNameElem = $("#lastName"),
-            userEmailElem = $("#userEmail"),
-            userNumberElem = $("#userNumber"),
-            uploadFileElem = $("#uploadPicture"),
-            calendarInput = $("#dateOfBirthInput"),
-            currentAddressElem = $("#currentAddress"),
-            stateElem = $("#react-select-3-input"),
-            cityElem = $("#react-select-4-input"),
-            submitButtonElem = $("#submit");
-
-    public AutomationPracticeForm openPage (String url){
-        open(url);
-        return this;
-    }
-
     public AutomationPracticeForm checkHeader(String text){
-        headerElem.shouldHave(text(text));
+        $(".main-header").shouldHave(text(text));
         return this;
     }
 
-    public AutomationPracticeForm setFirstNameElem(String firstName){
-        firstNameElem.setValue(firstName);
+    public AutomationPracticeForm setFirstName(String firstName){
+        $("#firstName").setValue(firstName);
         return this;
     }
 
     public AutomationPracticeForm setLastName(String surname){
-        lastNameElem.setValue(surname);
+        $("#lastName").setValue(surname);
         return this;
     }
 
     public AutomationPracticeForm setUserEmail(String email){
-        userEmailElem.setValue(email);
+        $("#userEmail").setValue(email);
         return this;
     }
 
     public AutomationPracticeForm setGender(String gender){
-        String locator = String.format("//label[text() = '%s']", gender);
-        SelenideElement elem = $x(locator);
-        elem.click();
+        $(byText(gender)).click();
         return this;
     }
 
     public AutomationPracticeForm setUserNumber(String number){
-        userNumberElem.setValue(number);
+        $("#userNumber").setValue(number);
         return this;
     }
 
     public AutomationPracticeForm setDateOfBirth(String year, String month, String day) {
-        calendarInput.click();
-        SelenideElement
-                yearSelectElem = $x("//select[@class = 'react-datepicker__year-select']//option[text() = '" + year + "']"),
-                monthSelectElem = $x("//select[@class = 'react-datepicker__month-select']//" +
-                        "option[text() = '" + month + "']"),
-                daySelectElem = $x("//div[@class = 'react-datepicker__month']//div[text() = '" + day + "']");
-        yearSelectElem.click();
-        monthSelectElem.click();
-        daySelectElem.click();
+        $("#dateOfBirthInput").click();
+        $(".react-datepicker__year-select").selectOption(year);
+        $(".react-datepicker__month-select").selectOption(month);
+        $(".react-datepicker__month").$(byText(day)).click();
         return this;
     }
 
     public AutomationPracticeForm setSubject(String subjectName){
-        SelenideElement
-                subjectContainerElem = $("#subjectsContainer"),
-                subjectInputElem =  $("#subjectsInput");
-        subjectContainerElem.click();
-        subjectInputElem.setValue(subjectName).pressEnter();
+        $("#subjectsInput").setValue(subjectName).pressEnter();
         return this;
     }
 
     public AutomationPracticeForm setHobbies(String hobbyName){
-        SelenideElement hobbiesSelectElem = $x("//label[text() = '"+hobbyName+"']");
-        hobbiesSelectElem.click();
+        $(byText(hobbyName)).click();
         return this;
     }
 
     public AutomationPracticeForm uploadPicture(String pathFile){
-        uploadFileElem.uploadFile(new File(pathFile));
+        $("#uploadPicture").uploadFile(new File(pathFile));
         return this;
     }
 
     public AutomationPracticeForm setCurrentAddress(String address){
-        currentAddressElem.setValue(address);
+        $("#currentAddress").setValue(address);
         return this;
     }
 
     public AutomationPracticeForm setStateAndCity(String city, String state){
-        stateElem.setValue(state).pressEnter();
-        cityElem.setValue(city).pressEnter();
+        $("#react-select-3-input").setValue(state).pressEnter();
+        $("#react-select-4-input").setValue(city).pressEnter();
         return this;
     }
 
-    public AutomationPracticeForm clickSubmitButton(){
-        submitButtonElem.click();
-        return this;
+    public void clickSubmitButton(){
+        $("#submit").click();
     }
 
-    public Map<String, String> getSubmittingFormData(){
-        ArrayList<String> rowArray = new ArrayList<>(executeJavaScript("return document.querySelectorAll(\"table > tbody > tr\")")); // бах
-        int rowSize = rowArray.size();
-        Map<String, String> submitData = new HashMap<>();
-        String key = "", value = "";
-        for(int i = 0; i <rowSize; i++){
-            for(int j =0;j<2; j++){
-                String js = String.format("return document.querySelectorAll(\"table > tbody > tr\")[%s].querySelectorAll(\"td\")[%s].textContent",i, j);
-                if (j == 0)
-                    key = executeJavaScript(js);
-                else
-                    value = executeJavaScript(js);
-            }
-            submitData.put(key,value);
-        }
-
-        return submitData;
-        }
+    public void verifyData(String firstName, String lastName, String email, String gender, String mobileNumber,
+                           String day, String month, String year, String subject, String hobby, String pathName,
+                           String currentAddress, String state, String city){
+        $x("//td[text()='Student Name']").parent().shouldHave(text(firstName + " " + lastName));
+        $x("//td[text()='Student Email']").parent().shouldHave(text(email));
+        $x("//td[text()='Gender']").parent().shouldHave(text(gender));
+        $x("//td[text()='Mobile']").parent().shouldHave(text(mobileNumber));
+        $x("//td[text()='Date of Birth']").parent().shouldHave(text(day + " " + month + "," + year));
+        $x("//td[text()='Subjects']").parent().shouldHave(text(subject));
+        $x("//td[text()='Hobbies']").parent().shouldHave(text(hobby));
+        $x("//td[text()='Picture']").parent().shouldHave(text(pathName));
+        $x("//td[text()='Address']").parent().shouldHave(text(currentAddress));
+        $x("//td[text()='State and City']").parent().shouldHave(text(state + " " + city));
+    }
 }

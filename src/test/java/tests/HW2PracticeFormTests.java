@@ -1,5 +1,7 @@
 package tests;
 
+import com.github.javafaker.Faker;
+
 import com.codeborne.selenide.Configuration;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -9,15 +11,17 @@ import static com.codeborne.selenide.Selenide.*;
 
 public class HW2PracticeFormTests {
 
-    String FirstName = "Test",
-            lastName = "First",
-            email = "test@test.ru",
-            mobileNumber = "1234567890",
-            currentAddress = "Moscow, Russia",
+    Faker faker = new Faker();
+
+    String firstName = faker.name().firstName(),
+            lastName = faker.name().lastName(),
+            email = faker.internet().emailAddress(),
+            mobileNumber = faker.phoneNumber().subscriberNumber(10),
+            currentAddress = faker.address().fullAddress(),
+            year = Integer.toString(faker.number().numberBetween(1980, 2021)),
+            day = Integer.toString(faker.number().numberBetween(7,26)),
             gender = "Male",
             month = "April",
-            year ="2001",
-            day = "13",
             hobby = "Music",
             subject = "Maths",
             pathName = "test_image.png",
@@ -35,12 +39,12 @@ public class HW2PracticeFormTests {
         open("https://demoqa.com/automation-practice-form");
         practiceForm
                 .checkHeader("Practice Form")
-                .setFirstName(FirstName)
+                .setFirstName(firstName)
                 .setLastName(lastName)
                 .setUserEmail(email)
                 .setGender(gender)
                 .setUserNumber(mobileNumber)
-                .setDateOfBirth(year,month, day)
+                .setDateOfBirth(year, month, day)
                 .setSubject(subject)
                 .setHobbies(hobby)
                 .uploadPicture(pathName)
@@ -49,7 +53,7 @@ public class HW2PracticeFormTests {
                 .clickSubmitButton();
         //comparing data
         practiceForm
-                .verifyData(FirstName, lastName, email, gender, mobileNumber, day, month, year, subject, hobby,pathName,
+                .verifyData(firstName, lastName, email, gender, mobileNumber, day, month, year, subject, hobby,pathName,
                         currentAddress, state, city);
         }
 }

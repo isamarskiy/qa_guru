@@ -27,11 +27,10 @@ public class TestBase {
 
     @AfterEach
     public void afterEach() {
-        attachScreenshot("Last screenshot");
+        attachScreenshot("My screenshot");
         attachPageSource();
         attachAsText("Browser console logs", getConsoleLogs());
-        if (System.getProperty("video_storage") != null)
-            attachVideo();
+        attachVideo();
         closeWebDriver();
     }
 }

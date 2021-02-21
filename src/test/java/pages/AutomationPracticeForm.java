@@ -1,85 +1,64 @@
 package pages;
 
-import static com.codeborne.selenide.Selectors.byText;
+import com.github.javafaker.Faker;
+import io.qameta.allure.Step;
 
-import java.io.File;
+import static com.codeborne.selenide.Selectors.byText;
 
 import static com.codeborne.selenide.Condition.text;
 import static com.codeborne.selenide.Selenide.*;
 
 public class AutomationPracticeForm {
 
-    public AutomationPracticeForm checkHeader(String text){
-        $(".main-header").shouldHave(text(text));
-        return this;
+    Faker faker = new Faker();
+
+    String firstName = faker.name().firstName(),
+            lastName = faker.name().lastName(),
+            email = faker.internet().emailAddress(),
+            mobileNumber = faker.phoneNumber().subscriberNumber(10),
+            currentAddress = faker.address().fullAddress(),
+            year = Integer.toString(faker.number().numberBetween(1980, 2021)),
+            day = Integer.toString(faker.number().numberBetween(7,26)),
+            gender = "Male",
+            month = "April",
+            hobby = "Music",
+            subject = "Maths",
+            image = "test_image.png",
+            state = "Haryana",
+            city = "Panipat";
+
+    @Step("Open form page")
+    public void openPage() {
+        open("https://demoqa.com/automation-practice-form");
+        $(".main-header").shouldHave(text("Practice Form"));
     }
 
-    public AutomationPracticeForm setFirstName(String firstName){
+    @Step("Fill the form")
+    public void fillForm() {
         $("#firstName").setValue(firstName);
-        return this;
-    }
-
-    public AutomationPracticeForm setLastName(String surname){
-        $("#lastName").setValue(surname);
-        return this;
-    }
-
-    public AutomationPracticeForm setUserEmail(String email){
+        $("#lastName").setValue(lastName);
         $("#userEmail").setValue(email);
-        return this;
-    }
-
-    public AutomationPracticeForm setGender(String gender){
         $(byText(gender)).click();
-        return this;
-    }
-
-    public AutomationPracticeForm setUserNumber(String number){
-        $("#userNumber").setValue(number);
-        return this;
-    }
-
-    public AutomationPracticeForm setDateOfBirth(String year, String month, String day) {
+        $("#userNumber").setValue(mobileNumber);
         $("#dateOfBirthInput").click();
         $(".react-datepicker__year-select").selectOption(year);
         $(".react-datepicker__month-select").selectOption(month);
         $(".react-datepicker__month").$(byText(day)).click();
-        return this;
-    }
-
-    public AutomationPracticeForm setSubject(String subjectName){
-        $("#subjectsInput").setValue(subjectName).pressEnter();
-        return this;
-    }
-
-    public AutomationPracticeForm setHobbies(String hobbyName){
-        $(byText(hobbyName)).click();
-        return this;
-    }
-
-    public AutomationPracticeForm uploadPicture(String pathFile){
-        $("#uploadPicture").uploadFile(new File(pathFile));
-        return this;
-    }
-
-    public AutomationPracticeForm setCurrentAddress(String address){
-        $("#currentAddress").setValue(address);
-        return this;
-    }
-
-    public AutomationPracticeForm setStateAndCity(String city, String state){
+        $("#subjectsInput").setValue(subject).pressEnter();
+        $(byText(hobby)).click();
+        $("#uploadPicture").uploadFromClasspath("img/" + image);
+        $("#currentAddress").setValue(currentAddress);
         $("#react-select-3-input").setValue(state).pressEnter();
         $("#react-select-4-input").setValue(city).pressEnter();
-        return this;
     }
 
-    public void clickSubmitButton(){
+    @Step("Click on submit button")
+    public void clickSubmitButton() {
         $("#submit").click();
     }
 
-    public void verifyData(String firstName, String lastName, String email, String gender, String mobileNumber,
-                           String day, String month, String year, String subject, String hobby, String pathName,
-                           String currentAddress, String state, String city){
+    @Step("Check submitting form")
+    public void verifyData() {
         $x("//td[text()='Student Name']").parent().shouldHave(text(firstName + " " + lastName));
         $x("//td[text()='Student Email']").parent().shouldHave(text(email));
         $x("//td[text()='Gender']").parent().shouldHave(text(gender));
@@ -87,7 +66,7 @@ public class AutomationPracticeForm {
         $x("//td[text()='Date of Birth']").parent().shouldHave(text(day + " " + month + "," + year));
         $x("//td[text()='Subjects']").parent().shouldHave(text(subject));
         $x("//td[text()='Hobbies']").parent().shouldHave(text(hobby));
-        $x("//td[text()='Picture']").parent().shouldHave(text(pathName));
+        $x("//td[text()='Picture']").parent().shouldHave(text(image));
         $x("//td[text()='Address']").parent().shouldHave(text(currentAddress));
         $x("//td[text()='State and City']").parent().shouldHave(text(state + " " + city));
     }

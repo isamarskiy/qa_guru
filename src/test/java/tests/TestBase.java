@@ -21,13 +21,13 @@ public class TestBase {
         capabilities.setCapability("enableVNC", true);
         capabilities.setCapability("enableVideo", true);
         Configuration.browserCapabilities = capabilities;
-        Configuration.remote = System.getProperty("remote_driver", "https://user1:1234@selenoid.autotests.cloud:4444/wd/hub/");
+        Configuration.remote = System.getProperty("remote_driver");
 
     }
 
     @AfterEach
     public void afterEach() {
-        attachScreenshot("My screenshot");
+        attachScreenshot("Final screenshot");
         attachPageSource();
         attachAsText("Browser console logs", getConsoleLogs());
         attachVideo();

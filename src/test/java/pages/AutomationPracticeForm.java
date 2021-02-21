@@ -33,8 +33,8 @@ public class AutomationPracticeForm {
         $(".main-header").shouldHave(text("Practice Form"));
     }
 
-    @Step("Fill the form")
-    public void fillForm() {
+    @Step("Full fill the form")
+    public void fullFillForm() {
         $("#firstName").setValue(firstName);
         $("#lastName").setValue(lastName);
         $("#userEmail").setValue(email);
@@ -50,6 +50,13 @@ public class AutomationPracticeForm {
         $("#currentAddress").setValue(currentAddress);
         $("#react-select-3-input").setValue(state).pressEnter();
         $("#react-select-4-input").setValue(city).pressEnter();
+    }
+
+    @Step("Part fill the form")
+    public void partFillForm() {
+        $("#firstName").setValue(firstName);
+        $("#lastName").setValue(lastName);
+        $("#userEmail").setValue(email);
     }
 
     @Step("Click on submit button")

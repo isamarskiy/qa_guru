@@ -35,3 +35,13 @@ tasks.withType(Test) {
 test {
     useJUnitPlatform()
 }
+
+task allTests(type: Test){
+    useJUnitPlatform()
+}
+
+task positiveTest(type: Test) {
+    useJUnitPlatform {
+        includeTags 'positive'
+    }
+}

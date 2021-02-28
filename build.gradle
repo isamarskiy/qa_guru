@@ -21,10 +21,10 @@ dependencies {
 
 allure {
     autoconfigure = true
-    version = '2.13.8'
+    version = "2.13.8"
 
     useJUnit5 {
-        version = '2.13.8'
+        version = "2.13.8"
     }
 }
 

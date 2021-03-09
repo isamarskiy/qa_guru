@@ -1,7 +1,10 @@
 package helpers;
 
 import com.codeborne.selenide.Selenide;
+import config.WebDriverConfig;
 import io.qameta.allure.Attachment;
+import org.aeonbits.owner.Config;
+import org.aeonbits.owner.ConfigFactory;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.remote.RemoteWebDriver;
@@ -13,6 +16,9 @@ import static org.openqa.selenium.logging.LogType.BROWSER;
 
 
 public class AttachmentsHelper {
+
+    static WebDriverConfig config = ConfigFactory
+            .create(WebDriverConfig.class, System.getProperties());
 
     @Attachment(value = "{attachName}", type = "text/plain")
     public static String attachAsText(String attachName, String message) {
@@ -37,7 +43,7 @@ public class AttachmentsHelper {
     }
 
     public static String getVideoUrl() {
-        return System.getProperty("video_storage") + getSessionId() + ".mp4";
+        return config.video_storage() + getSessionId() + ".mp4";
     }
 
     public static String getSessionId(){

@@ -12,10 +12,11 @@ import static com.codeborne.selenide.Selenide.closeWebDriver;
 import static com.codeborne.selenide.logevents.SelenideLogger.addListener;
 import static helpers.AttachmentsHelper.*;
 
+
 public class TestBase {
 
-    static WebDriverConfig config = ConfigFactory
-            .create(WebDriverConfig.class, System.getProperties());
+    public static WebDriverConfig config = ConfigFactory.create(WebDriverConfig.class, System.getProperties());
+
     @BeforeAll
     static void setup() {
 
@@ -23,6 +24,7 @@ public class TestBase {
         Configuration.browser = config.getBrowser();
         Configuration.browserVersion = config.getBrowserVersion();
         Configuration.startMaximized = true;
+
 
         if (config.remote() != null){
             DesiredCapabilities capabilities = new DesiredCapabilities();
@@ -38,7 +40,8 @@ public class TestBase {
         attachScreenshot("Final screenshot");
         attachPageSource();
         attachAsText("Browser console logs", getConsoleLogs());
-        attachVideo();
+        if (config.remote() != null)
+            attachVideo();
         closeWebDriver();
     }
 }
